@@ -30,44 +30,61 @@ class _MyAppState extends State<MyApp> {
           TextButton(
             child: const Text("Teste"),
             onPressed: () {
-              CheckStepper.show(
-                context: context,
-                checkItens: [
-                  CheckStep(
-                    title: "Validando",
-                    checkStatus: (setMessage) async {
-                      await Future.delayed(const Duration(seconds: 1));
-                      // throw "Error teste";
-                      return CheckStepState.complete;
-                    },
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (c) => Scaffold(
+                    backgroundColor: Colors.white,
+                    body: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        CheckStepper.widget(
+                          width: MediaQuery.of(context).size.width,
+                          height: null,
+                          checkItens: [
+                            CheckStep(
+                              title: "Validando",
+                              checkStatus: (setMessage) async {
+                                await Future.delayed(
+                                    const Duration(seconds: 1));
+                                // throw "Error teste";
+                                return CheckStepState.complete;
+                              },
+                            ),
+                            CheckStep(
+                              title: "Emitindo Nota",
+                              checkStatus: (setMessage) async {
+                                await Future.delayed(
+                                    const Duration(seconds: 1));
+                                setMessage(
+                                  StepMessage.message(
+                                      message:
+                                          "HOUVE ERRO AO REALIZAR A VENDA\n\nErro: Data de Validade do Certificado jÂ. expirou: 20/01/2024\nNumero Série: 601\nNumero Nota: 199"),
+                                );
+                                return CheckStepState.warning;
+                              },
+                            ),
+                            CheckStep(
+                              title: "Finalizando venda",
+                              checkStatus: (setMessage) async {
+                                await Future.delayed(
+                                    const Duration(seconds: 1));
+                                return CheckStepState.complete;
+                              },
+                            ),
+                            CheckStep(
+                              title: "Gerando comprovante",
+                              checkStatus: (setMessage) async {
+                                await Future.delayed(
+                                    const Duration(seconds: 1));
+                                return CheckStepState.complete;
+                              },
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
                   ),
-                  CheckStep(
-                    title: "Emitindo Nota",
-                    checkStatus: (setMessage) async {
-                      await Future.delayed(const Duration(seconds: 1));
-                      setMessage(
-                        StepMessage.message(
-                            message:
-                                "HOUVE ERRO AO REALIZAR A VENDA\n\nErro: Data de Validade do Certificado jÂ. expirou: 20/01/2024\nNumero Série: 601\nNumero Nota: 199"),
-                      );
-                      return CheckStepState.warning;
-                    },
-                  ),
-                  CheckStep(
-                    title: "Finalizando venda",
-                    checkStatus: (setMessage) async {
-                      await Future.delayed(const Duration(seconds: 1));
-                      return CheckStepState.complete;
-                    },
-                  ),
-                  CheckStep(
-                    title: "Gerando comprovante",
-                    checkStatus: (setMessage) async {
-                      await Future.delayed(const Duration(seconds: 1));
-                      return CheckStepState.complete;
-                    },
-                  ),
-                ],
+                ),
               );
             },
           ),

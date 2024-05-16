@@ -253,6 +253,24 @@ class CheckStepper extends StatefulWidget {
       },
     );
   }
+
+  static Widget widget({
+    required double? width,
+    required double? height,
+    required List<CheckStep> checkItens,
+    VoidCallback? onSave,
+    VoidCallback? onTente,
+  }) {
+    return SizedBox(
+      width: width,
+      height: height,
+      child: CheckStepper._(
+        steps: checkItens,
+        onSave: onSave,
+        onTente: onTente,
+      ),
+    );
+  }
 }
 
 class _CheckStepperState extends State<CheckStepper>
@@ -548,8 +566,10 @@ class _CheckStepperState extends State<CheckStepper>
                       final type = await widget.steps[index]
                           .errorCallback!(widget.steps[index].error);
                       if (type == CheckStepErrorType.close) {
+                        //
+                      } else if (type == CheckStepErrorType.closeBack) {
                         navigator.pop();
-                      } else {
+                      } else if (type == CheckStepErrorType.refreshAction) {
                         widget.steps[index].alreadyChecked = false;
                         startCheck();
                       }
@@ -695,47 +715,47 @@ class _CheckStepperState extends State<CheckStepper>
           Visibility(
             visible: widget.steps[i].isActive,
             replacement: const SizedBox.shrink(),
-            child: Column(
-              key: _keys[i],
-              children: <Widget>[
-                _buildVerticalHeader(i),
-                _buildVerticalBody(i),
-              ],
+            child: AnimatedContainer(
+              curve: Curves.linear,
+              duration: Duration(
+                milliseconds: 600,
+              ), //CheckStepState state = widget.steps[index].state
+              child: Column(
+                key: _keys[i],
+                children: <Widget>[
+                  _buildVerticalHeader(i),
+                  _buildVerticalBody(i),
+                ],
+              ),
             ),
           ),
         const SizedBox(height: 10),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Builder(
-              builder: (_) {
-                if (widget.onTente != null) {
-                  return TextButton(
-                    onPressed: () async {
-                      for (var i = 0; i < widget.steps.length; i++) {
-                        widget.steps[i].alreadyChecked = false;
-                        widget.steps[i].isActive = false;
-                      }
-                      widget.steps[0].isActive = true;
-                      setState(() {});
-                      startCheck();
-                    },
-                    child: const Text("TENTAR NOVAMENTE"),
-                  );
-                } else {
-                  return const SizedBox.shrink();
-                }
-              },
-            ),
-            TextButton(
-              onPressed: () async {
-                if (widget.onSave != null) widget.onSave!();
-                Navigator.of(context).pop();
-              },
-              child: const Text("Fechar"),
-            ),
-          ],
-        ),
+        if (widget.onTente != null || widget.onSave != null)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              if (widget.onTente != null)
+                TextButton(
+                  onPressed: () async {
+                    for (var i = 0; i < widget.steps.length; i++) {
+                      widget.steps[i].alreadyChecked = false;
+                      widget.steps[i].isActive = false;
+                    }
+                    widget.steps[0].isActive = true;
+                    setState(() {});
+                    startCheck();
+                  },
+                  child: const Text("TENTAR NOVAMENTE"),
+                ),
+              if (widget.onSave != null)
+                TextButton(
+                  onPressed: () async {
+                    if (widget.onSave != null) widget.onSave!();
+                  },
+                  child: const Text("Fechar"),
+                ),
+            ],
+          ),
       ],
     );
   }
@@ -922,6 +942,7 @@ class StepMessage {
 
 enum CheckStepErrorType {
   close,
+  closeBack,
   refreshAction,
 }
 
