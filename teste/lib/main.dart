@@ -5,7 +5,15 @@ void main() {
   runApp(MaterialApp(
     title: 'Flutter Demo',
     theme: ThemeData(
-      primarySwatch: Colors.purple,
+      useMaterial3: true,
+      colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF57CC99)),
+    ),
+    darkTheme: ThemeData(
+      useMaterial3: true,
+      colorScheme: ColorScheme.fromSeed(
+        brightness: Brightness.dark, // <-- the only line added
+        seedColor: const Color(0xFF57CC99),
+      ),
     ),
     debugShowCheckedModeBanner: false,
     home: MyApp(),
@@ -27,13 +35,52 @@ class _MyAppState extends State<MyApp> {
       ),
       body: Column(
         children: [
+          CheckStepper.widget(
+            width: MediaQuery.of(context).size.width,
+            height: null,
+            checkItens: [
+              CheckStep(
+                title: "Validando",
+                checkStatus: (setMessage) async {
+                  await Future.delayed(const Duration(seconds: 1));
+                  // throw "Error teste";
+                  return CheckStepState.complete;
+                },
+              ),
+              CheckStep(
+                title: "Emitindo Nota",
+                checkStatus: (setMessage) async {
+                  await Future.delayed(const Duration(seconds: 1));
+                  setMessage(
+                    StepMessage.message(
+                        message:
+                            "HOUVE ERRO AO REALIZAR A VENDA\n\nErro: Data de Validade do Certificado jÂ. expirou: 20/01/2024\nNumero Série: 601\nNumero Nota: 199"),
+                  );
+                  return CheckStepState.warning;
+                },
+              ),
+              CheckStep(
+                title: "Finalizando venda",
+                checkStatus: (setMessage) async {
+                  await Future.delayed(const Duration(seconds: 1));
+                  return CheckStepState.complete;
+                },
+              ),
+              CheckStep(
+                title: "Gerando comprovante",
+                checkStatus: (setMessage) async {
+                  await Future.delayed(const Duration(seconds: 1));
+                  return CheckStepState.complete;
+                },
+              ),
+            ],
+          ),
           TextButton(
-            child: const Text("Teste"),
+            child: const Text("widget"),
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (c) => Scaffold(
-                    backgroundColor: Colors.white,
                     body: Column(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [

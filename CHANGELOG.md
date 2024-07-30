@@ -21,3 +21,7 @@
 ## 0.0.3+3
 
 -    Ajustes de animation;
+
+## 0.0.4
+
+-    Retirando a cor fixa do background.

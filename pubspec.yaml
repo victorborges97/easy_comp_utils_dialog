@@ -1,6 +1,6 @@
 name: easy_comp_utils_dialog
 description: Componentes Feitos mais para uso pessoal.
-version: 0.0.3+3
+version: 0.0.4
 homepage: https://github.com/victorborges97/
 
 # flutter pub publish --dry-run

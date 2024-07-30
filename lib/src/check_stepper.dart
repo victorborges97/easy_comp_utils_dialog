@@ -186,7 +186,7 @@ class CheckStepper extends StatefulWidget {
   /// new one.
   ///
   /// The [steps], [type], and [currentStep] arguments must not be null.
-  const CheckStepper._({
+  CheckStepper._({
     required this.steps,
     this.physics,
     this.type = CheckStepperType.vertical,
@@ -194,6 +194,7 @@ class CheckStepper extends StatefulWidget {
     this.margin,
     this.onSave,
     this.onTente,
+    this.checkStepperStyle = const CheckStepperStyle(),
   });
 
   /// The steps of the stepper whose titles, subtitles, icons always get shown.
@@ -225,6 +226,8 @@ class CheckStepper extends StatefulWidget {
   final VoidCallback? onTente;
   final VoidCallback? onSave;
 
+  CheckStepperStyle checkStepperStyle = const CheckStepperStyle();
+
   @override
   State<CheckStepper> createState() => _CheckStepperState();
 
@@ -233,6 +236,7 @@ class CheckStepper extends StatefulWidget {
     required List<CheckStep> checkItens,
     VoidCallback? onSave,
     VoidCallback? onTente,
+    CheckStepperStyle checkStepperStyle = const CheckStepperStyle(),
   }) async {
     return showDialog(
       context: context,
@@ -247,6 +251,7 @@ class CheckStepper extends StatefulWidget {
               steps: checkItens,
               onSave: onSave,
               onTente: onTente,
+              checkStepperStyle: checkStepperStyle,
             ),
           ),
         );
@@ -260,6 +265,7 @@ class CheckStepper extends StatefulWidget {
     required List<CheckStep> checkItens,
     VoidCallback? onSave,
     VoidCallback? onTente,
+    CheckStepperStyle checkStepperStyle = const CheckStepperStyle(),
   }) {
     return SizedBox(
       width: width,
@@ -268,6 +274,7 @@ class CheckStepper extends StatefulWidget {
         steps: checkItens,
         onSave: onSave,
         onTente: onTente,
+        checkStepperStyle: checkStepperStyle,
       ),
     );
   }
@@ -717,7 +724,7 @@ class _CheckStepperState extends State<CheckStepper>
             replacement: const SizedBox.shrink(),
             child: AnimatedContainer(
               curve: Curves.linear,
-              duration: Duration(
+              duration: const Duration(
                 milliseconds: 600,
               ), //CheckStepState state = widget.steps[index].state
               child: Column(
@@ -871,7 +878,7 @@ class _CheckStepperState extends State<CheckStepper>
                   : c.maxWidth,
               padding: const EdgeInsets.only(top: 20, bottom: 10),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: widget.checkStepperStyle.backgroundColor,
                 borderRadius: BorderRadius.circular(20),
               ),
               child: _buildVertical(),
@@ -882,6 +889,13 @@ class _CheckStepperState extends State<CheckStepper>
       },
     );
   }
+}
+
+class CheckStepperStyle {
+  final Color? backgroundColor;
+  const CheckStepperStyle({
+    this.backgroundColor,
+  });
 }
 
 class SetMessageWidget extends StatelessWidget {
